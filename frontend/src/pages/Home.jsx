@@ -36,7 +36,7 @@ function Home() {
     }}
 />
         <h1>Our Products</h1>
-
+      
         {products.length === 0 ? (
           <h2>No Products Found</h2>
         ) : (

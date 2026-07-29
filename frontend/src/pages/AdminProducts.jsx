@@ -150,6 +150,13 @@ return(
         })
     }
 />
+<br/><br/>
+
+<input
+  type="text"
+  placeholder="Category"
+/>
+
 {
     editingId ? (
         <button onClick={updateProduct}>

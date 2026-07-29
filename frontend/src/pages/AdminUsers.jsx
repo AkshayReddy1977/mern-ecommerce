@@ -1,60 +1,92 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
+import api from "../api";
 
 function AdminUsers() {
+  const [users, setUsers] = useState([]);
 
-    const [users, setUsers] = useState([]);
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-    useEffect(() => {
-        fetchUsers();
-    }, []);
+  const fetchUsers = async () => {
+    try {
+      const res = await api.get("/users");
+      setUsers(res.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-    const fetchUsers = async () => {
+  const deleteUser = async (id) => {
+    if (!window.confirm("Delete this user?")) return;
 
-        try {
+    try {
+      await api.delete(`/users/${id}`);
+      fetchUsers();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-            const res = await api.get("/users");
+  const changeRole = async (id, currentRole) => {
+    try {
+      await api.put(`/users/${id}/role`, {
+        role: currentRole === "admin" ? "user" : "admin",
+      });
 
-            setUsers(res.data.data);
+      fetchUsers();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-        } catch (error) {
+  return (
+    <div>
+      <h1>Admin Users</h1>
 
-            console.log(error);
+      <table border="1" cellPadding="10">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Role Action</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
 
-        }
+        <tbody>
+          {users.map((user) => (
+            <tr key={user._id}>
+              <td>{user.name}</td>
+              <td>{user.email}</td>
+              <td>{user.role}</td>
 
-    };
+              <td>
+                <button
+                  onClick={() =>
+                    changeRole(user._id, user.role)
+                  }
+                >
+                  {user.role === "admin"
+                    ? "Make User"
+                    : "Make Admin"}
+                </button>
+              </td>
 
-    return (
-        <div style={{ padding: "20px" }}>
-
-            <h1>All Users</h1>
-
-            {
-                users.map((user) => (
-
-                    <div
-                        key={user._id}
-                        style={{
-                            border: "1px solid gray",
-                            padding: "20px",
-                            marginBottom: "20px"
-                        }}
-                    >
-
-                        <h3>{user.name}</h3>
-
-                        <p>{user.email}</p>
-
-                        <p>Role: {user.role}</p>
-
-                    </div>
-
-                ))
-            }
-
-        </div>
-    );
+              <td>
+                <button
+                  onClick={() => deleteUser(user._id)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 export default AdminUsers;
