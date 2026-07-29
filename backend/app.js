@@ -11,6 +11,10 @@ const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const userRoutes = require("./routes/userRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
+const wishlistRoutes = require("./routes/wishlistRoutes");
+const couponRoutes = require("./routes/couponRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 app.use("/admin", adminRoutes);
 
@@ -20,4 +24,9 @@ app.use("/cart", cartRoutes);
 app.use("/orders", orderRoutes);
 //console.log(orderRoutes);
 app.use("/users", userRoutes);
+app.use("/admin", adminRoutes);
+app.use("/categories", categoryRoutes);
+app.use("/wishlist", wishlistRoutes);
+app.use("/coupons", couponRoutes);
+app.use("/payment", paymentRoutes);
 module.exports = app;

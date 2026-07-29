@@ -17,10 +17,34 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: [true, "Stock is required"]
     },
-    category:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Category"
-    }
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+        required: true
+    },
+    reviews: [
+        {
+            user: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+            },
+            name: String,
+            rating: Number,
+            comment: String,
+        },
+    ],
+    numReviews: {
+        type: Number,
+        default: 0,
+    },
+    rating: {
+        type: Number,
+        default: 0,
+    },
+    image: {
+    type: String,
+    default: ""
+    },
 });
 
 const Product = mongoose.model("Product", productSchema);

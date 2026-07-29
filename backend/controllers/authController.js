@@ -71,8 +71,75 @@ const loginUser = async (req, res) => {
         });
     }
 };
+// =======================================
+// Get Logged-in User Profile
+// =======================================
+const getProfile = async (req, res) => {
+    try {
+
+        const user = await User.findById(req.user.id)
+            .select("-password");
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: user
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+};
+// =======================================
+// Update Profile
+// =======================================
+const updateProfile = async (req, res) => {
+    try {
+
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        user.name = req.body.name || user.name;
+        user.email = req.body.email || user.email;
+
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Profile updated successfully",
+            data: user
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+};
 
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    getProfile,
+    updateProfile
 };

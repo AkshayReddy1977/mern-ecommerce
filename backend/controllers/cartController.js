@@ -4,11 +4,19 @@ const Cart = require("../models/cartModel");
 const addToCart = async (req, res) => {
     try {
 
-        const { product, quantity } = req.body;
+        const product = req.body.product || req.body.productId;
+        const quantity = Number(req.body.quantity) || 1;
+
+        if (!product) {
+            return res.status(400).json({
+                success: false,
+                message: "Product ID is required"
+            });
+        }
 
         let cartItem = await Cart.findOne({
             user: req.user.id,
-            product,
+            product
         });
 
         if (cartItem) {
@@ -17,25 +25,25 @@ const addToCart = async (req, res) => {
 
             return res.json({
                 success: true,
-                data: cartItem,
+                data: cartItem
             });
         }
 
         cartItem = await Cart.create({
             user: req.user.id,
             product,
-            quantity,
+            quantity
         });
 
         res.status(201).json({
             success: true,
-            data: cartItem,
+            data: cartItem
         });
 
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: error.message,
+            message: error.message
         });
     }
 };

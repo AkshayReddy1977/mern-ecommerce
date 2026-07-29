@@ -1,22 +1,38 @@
+const protect = require("../middleware/authMiddleware");
+const adminOnly = require("../middleware/adminMiddleware");
 const express = require("express");
 const router = express.Router();
 
 const {
     createProduct,
     getProducts,
+    getSingleProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    searchProducts,
+    filterProducts,
+    createProductReview,
 } = require("../controllers/productControllers");
 
-router.post("/", createProduct);
+const upload = require("../middleware/uploadMiddleware");
+
+// Public Routes
 router.get("/", getProducts);
-router.put("/:id", updateProduct);
-router.delete("/:id", deleteProduct);
+router.get("/search", searchProducts);
+router.get("/filter", filterProducts);
+router.get("/:id", getSingleProduct);
 
+// Protected Route
+router.post("/:id/review", protect, createProductReview);
 
-const protect = require("../middleware/authMiddleware");
-router.post("/", protect, createProduct);
-router.put("/:id", protect, updateProduct);
-const adminOnly = require("../middleware/adminMiddleware");
+// Admin Routes
+router.post(
+    "/",
+    protect,
+    adminOnly,
+    createProduct
+);
+router.put("/:id", protect, adminOnly, updateProduct);
 router.delete("/:id", protect, adminOnly, deleteProduct);
+
 module.exports = router;
